@@ -66,8 +66,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return false;
     } catch (error) {
       console.error('Login error:', error);
-      // Re-throw the error so the component can display the specific error message
-      throw error;
+      // Don't throw error for development mode fallback
+      if (error instanceof Error && error.message.includes('Invalid login credentials')) {
+        console.error('Login error:', error.message);
+        return false;
+      }
+      console.error('Login error:', error);
+      return false;
     }
   };
 
