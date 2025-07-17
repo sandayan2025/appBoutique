@@ -26,7 +26,8 @@ const AdminLogin: React.FC = () => {
         setError('Email ou mot de passe incorrect');
       }
     } catch (err) {
-      setError('Une erreur est survenue. Veuillez réessayer.');
+      const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue. Veuillez réessayer.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
