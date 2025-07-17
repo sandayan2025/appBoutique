@@ -66,7 +66,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return false;
     } catch (error) {
       console.error('Login error:', error);
-      return false;
+      // Re-throw the error so the component can display the specific error message
+      throw error;
     }
   };
 
