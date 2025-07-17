@@ -23,7 +23,7 @@ export const signIn = async (email: string, password: string): Promise<User | nu
 
     if (error) {
       // Handle invalid credentials for admin user - provide development fallback
-      if (error.message === 'Invalid login credentials' && email === 'admin@store.com' && password === 'admin123') {
+      if (error.message.trim() === 'Invalid login credentials' && email === 'admin@store.com' && password === 'admin123') {
         console.warn('🔧 SUPABASE ADMIN USER NOT FOUND - Using Development Mode');
         console.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.warn('To enable full Supabase features, create the admin user:');
