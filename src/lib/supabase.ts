@@ -12,16 +12,16 @@ const requiredEnvVars = [
 const missingVars = requiredEnvVars.filter(varName => !import.meta.env[varName]);
 
 if (missingVars.length > 0) {
-  console.error('🔥 SUPABASE CONFIGURATION ERROR 🔥');
-  console.error('Missing Supabase environment variables:', missingVars);
-  console.error('');
-  console.error('TO FIX THIS ERROR:');
-  console.error('1. Create a .env file in your project root');
-  console.error('2. Copy the values from .env.example');
-  console.error('3. Replace placeholder values with your actual Supabase config');
-  console.error('4. Restart the development server');
-  console.error('');
-  console.error('Get your Supabase config from: https://app.supabase.com');
+  console.warn('🔥 SUPABASE CONFIGURATION ERROR 🔥');
+  console.warn('Missing Supabase environment variables:', missingVars);
+  console.warn('');
+  console.warn('TO FIX THIS ERROR:');
+  console.warn('1. Create a .env file in your project root');
+  console.warn('2. Copy the values from .env.example');
+  console.warn('3. Replace placeholder values with your actual Supabase config');
+  console.warn('4. Restart the development server');
+  console.warn('');
+  console.warn('Get your Supabase config from: https://app.supabase.com');
 }
 
 // Check if we have valid configuration values (not just placeholders)
@@ -33,15 +33,15 @@ const hasValidConfig = supabaseUrl &&
   supabaseAnonKey.length > 20;
 
 if (!hasValidConfig) {
-  console.error('🔥 SUPABASE CONFIGURATION ERROR 🔥');
-  console.error('Supabase environment variables contain placeholder values.');
-  console.error('Please update your .env file with actual Supabase configuration values.');
-  console.error('');
-  console.error('Current URL:', supabaseUrl);
-  console.error('Current Key:', supabaseAnonKey ? 'Set but appears to be placeholder' : 'Not set');
-  console.error('');
-  console.error('Get your Supabase config from: https://app.supabase.com');
-  console.error('Go to Settings > API to find your URL and anon key');
+  console.warn('🔥 SUPABASE CONFIGURATION ERROR 🔥');
+  console.warn('Supabase environment variables contain placeholder values.');
+  console.warn('Please update your .env file with actual Supabase configuration values.');
+  console.warn('');
+  console.warn('Current URL:', supabaseUrl);
+  console.warn('Current Key:', supabaseAnonKey ? 'Set but appears to be placeholder' : 'Not set');
+  console.warn('');
+  console.warn('Get your Supabase config from: https://app.supabase.com');
+  console.warn('Go to Settings > API to find your URL and anon key');
 }
 
 // Initialize Supabase client
@@ -52,8 +52,8 @@ if (hasValidConfig) {
     supabase = createClient(supabaseUrl, supabaseAnonKey);
     console.log('Supabase client initialized successfully');
   } catch (error) {
-    console.error('Failed to initialize Supabase client:', error);
-    console.error('Please check your Supabase configuration in .env file');
+    console.warn('Failed to initialize Supabase client:', error);
+    console.warn('Please check your Supabase configuration in .env file');
   }
 } else {
   console.warn('🔥 Supabase not initialized due to missing or invalid configuration');
