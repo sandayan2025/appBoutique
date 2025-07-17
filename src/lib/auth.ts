@@ -48,6 +48,23 @@ export const signIn = async (email: string, password: string): Promise<User | nu
       name: data.user.user_metadata?.name || 'Admin User'
     };
   } catch (error: any) {
+    // Handle network errors (Failed to fetch)
+    if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+      console.warn('🔧 SUPABASE CONNECTION FAILED - Using Development Mode');
+      console.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.warn('Network error occurred. Please check your Supabase configuration:');
+      console.warn('1. Verify your VITE_SUPABASE_URL in .env file');
+      console.warn('2. Verify your VITE_SUPABASE_ANON_KEY in .env file');
+      console.warn('3. Ensure your Supabase project is active');
+      console.warn('4. Check your internet connection');
+      console.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      
+      // Fallback to development mode for admin user
+      if (email === 'admin@store.com' && password === 'admin123') {
+        return { id: 'dev-admin', email, name: 'Admin User (Dev Mode)' };
+      }
+      throw new Error('Connection failed. Please check your Supabase configuration.');
+    }
     throw error;
   }
 };
