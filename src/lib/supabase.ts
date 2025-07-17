@@ -27,8 +27,10 @@ if (missingVars.length > 0) {
 // Check if we have valid configuration values (not just placeholders)
 const hasValidConfig = supabaseUrl && 
   supabaseUrl !== 'your_supabase_project_url' &&
+  supabaseUrl.startsWith('https://') &&
   supabaseAnonKey &&
-  supabaseAnonKey !== 'your_supabase_anon_key';
+  supabaseAnonKey !== 'your_supabase_anon_key' &&
+  supabaseAnonKey.length > 20;
 
 if (!hasValidConfig) {
   console.error('🔥 SUPABASE CONFIGURATION ERROR 🔥');
@@ -37,6 +39,9 @@ if (!hasValidConfig) {
   console.error('');
   console.error('Current URL:', supabaseUrl);
   console.error('Current Key:', supabaseAnonKey ? 'Set but appears to be placeholder' : 'Not set');
+  console.error('');
+  console.error('Get your Supabase config from: https://app.supabase.com');
+  console.error('Go to Settings > API to find your URL and anon key');
 }
 
 // Initialize Supabase client
