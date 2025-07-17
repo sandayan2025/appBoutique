@@ -65,13 +65,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return false;
     } catch (error) {
-      console.error('Login error:', error);
-      // Don't throw error for development mode fallback
-      if (error instanceof Error && error.message.includes('Invalid login credentials')) {
+      // Handle authentication errors gracefully
+      if (error instanceof Error) {
         console.error('Login error:', error.message);
-        return false;
+        // Don't return false for development fallback scenarios
+        if (error.message.includes('Invalid login credentials') && email === 'admin@store.com') {
+          // This should have been handled in signIn, but if it reaches here, try again
+          try {
+            const fallbackUser = await signIn(email, password);
+            if (fallbackUser) {
+              setUser(fallbackUser);
+              setIsAuthenticated(true);
+              return true;
+            }
+          } catch (fallbackError) {
+            console.error('Fallback login failed:', fallbackError);
+          }
+        }
       }
-      console.error('Login error:', error);
       return false;
     }
   };

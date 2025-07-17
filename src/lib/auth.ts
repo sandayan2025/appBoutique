@@ -22,13 +22,19 @@ export const signIn = async (email: string, password: string): Promise<User | nu
     });
 
     if (error) {
-      // Handle invalid credentials for admin user
+      // Handle invalid credentials for admin user - provide development fallback
       if (error.message === 'Invalid login credentials' && email === 'admin@store.com' && password === 'admin123') {
-        console.warn('⚠️ Admin user not found in Supabase, using development mode');
-        console.warn('To use full Supabase features, create admin user in Supabase dashboard:');
+        console.warn('🔧 SUPABASE ADMIN USER NOT FOUND - Using Development Mode');
+        console.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.warn('To enable full Supabase features, create the admin user:');
         console.warn('1. Go to Authentication > Users in your Supabase dashboard');
-        console.warn('2. Add user with email: admin@store.com and password: admin123');
-        console.warn('3. Disable email confirmation in Authentication > Settings');
+        console.warn('2. Click "Add user" and create:');
+        console.warn('   • Email: admin@store.com');
+        console.warn('   • Password: admin123');
+        console.warn('3. Go to Authentication > Settings');
+        console.warn('4. Disable "Enable email confirmations"');
+        console.warn('5. Restart the application');
+        console.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         
         // Return development admin user
         return { id: 'dev-admin', email, name: 'Admin User (Dev Mode)' };

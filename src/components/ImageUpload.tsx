@@ -39,7 +39,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       onImagesChange([...images, ...uploadedUrls]);
     } catch (error) {
       console.error('Error uploading images:', error);
-      alert('Erreur lors du téléchargement des images');
+      // Show more specific error message
+      if (error instanceof Error && error.message.includes('Bucket not found')) {
+        alert('Configuration Supabase requise: Le bucket de stockage "product-images" n\'existe pas. Consultez la console pour les instructions de configuration.');
+      } else {
+        alert('Erreur lors du téléchargement des images. Images de démonstration utilisées.');
+      }
     } finally {
       setUploading(false);
     }

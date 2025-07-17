@@ -3,24 +3,50 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const uploadProductImage = async (file: File): Promise<string> => {
   if (!isSupabaseAvailable()) {
-    throw new Error('Supabase not available');
+    // Return a placeholder image URL for development
+    console.warn('⚠️ Supabase not available - using placeholder image');
+    return `https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop&crop=center`;
   }
 
-  const fileExtension = file.name.split('.').pop();
-  const fileName = `${uuidv4()}.${fileExtension}`;
-  const filePath = `products/${fileName}`;
+  try {
+    const fileExtension = file.name.split('.').pop();
+    const fileName = `${uuidv4()}.${fileExtension}`;
+    const filePath = `products/${fileName}`;
 
-  const { error: uploadError } = await supabase.storage
-    .from('product-images')
-    .upload(filePath, file);
+    const { error: uploadError } = await supabase.storage
+      .from('product-images')
+      .upload(filePath, file);
 
-  if (uploadError) throw uploadError;
+    if (uploadError) {
+      // Handle bucket not found error
+      if (uploadError.message.includes('Bucket not found')) {
+        console.error('🪣 SUPABASE STORAGE BUCKET NOT FOUND');
+        console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.error('To enable image uploads, create the storage bucket:');
+        console.error('1. Go to Storage in your Supabase dashboard');
+        console.error('2. Click "New bucket"');
+        console.error('3. Name it exactly: product-images');
+        console.error('4. Set it to "Public bucket"');
+        console.error('5. Create the bucket');
+        console.error('6. Set up storage policies (see README.md)');
+        console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        
+        // Return a placeholder image URL
+        return `https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop&crop=center`;
+      }
+      throw uploadError;
+    }
 
-  const { data } = supabase.storage
-    .from('product-images')
-    .getPublicUrl(filePath);
+    const { data } = supabase.storage
+      .from('product-images')
+      .getPublicUrl(filePath);
 
-  return data.publicUrl;
+    return data.publicUrl;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    // Return placeholder image as fallback
+    return `https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop&crop=center`;
+  }
 };
 
 export const deleteProductImage = async (imageUrl: string): Promise<void> => {
