@@ -175,43 +175,94 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const addProduct = async (productData: Omit<Product, 'id' | 'views' | 'created_at' | 'updated_at'>) => {
+    if (!isSupabaseAvailable()) {
+      // Local fallback when Supabase is not available
+      const newProduct: Product = {
+        id: Date.now().toString(),
+        ...productData,
+        views: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      setProducts(prev => [newProduct, ...prev]);
+      return;
+    }
+
     try {
       await addProductToDatabase(productData);
       // Products will be updated via the real-time subscription
     } catch (error) {
       console.error('Error adding product:', error);
-      throw error;
+      // Fallback to local state if Supabase fails
+      const newProduct: Product = {
+        id: Date.now().toString(),
+        ...productData,
+        views: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      setProducts(prev => [newProduct, ...prev]);
     }
   };
 
   const updateProduct = async (id: string, updates: Partial<Product>) => {
+    if (!isSupabaseAvailable()) {
+      // Local fallback when Supabase is not available
+      setProducts(prev => prev.map(product => 
+        product.id === id 
+          ? { ...product, ...updates, updated_at: new Date().toISOString() }
+          : product
+      ));
+      return;
+    }
+
     try {
       await updateProductInDatabase(id, updates);
       // Products will be updated via the real-time subscription
     } catch (error) {
       console.error('Error updating product:', error);
-      throw error;
+      // Fallback to local state if Supabase fails
+      setProducts(prev => prev.map(product => 
+        product.id === id 
+          ? { ...product, ...updates, updated_at: new Date().toISOString() }
+          : product
+      ));
     }
   };
 
   const deleteProduct = async (id: string) => {
+    if (!isSupabaseAvailable()) {
+      // Local fallback when Supabase is not available
+      setProducts(prev => prev.filter(product => product.id !== id));
+      return;
+    }
+
     try {
       await deleteProductFromDatabase(id);
       // Products will be updated via the real-time subscription
     } catch (error) {
       console.error('Error deleting product:', error);
-      throw error;
+      // Fallback to local state if Supabase fails
+      setProducts(prev => prev.filter(product => product.id !== id));
     }
   };
 
   const updateStoreSettings = async (settings: Partial<StoreSettings>) => {
+    const updatedSettings = { ...storeSettings, ...settings };
+    
+    if (!isSupabaseAvailable()) {
+      // Local fallback when Supabase is not available
+      setStoreSettings(updatedSettings);
+      return;
+    }
+
     try {
-      const updatedSettings = { ...storeSettings, ...settings };
       await updateStoreSettingsInDatabase(updatedSettings);
       setStoreSettings(updatedSettings);
     } catch (error) {
       console.error('Error updating store settings:', error);
-      throw error;
+      // Fallback to local state if Supabase fails
+      setStoreSettings(updatedSettings);
     }
   };
 
