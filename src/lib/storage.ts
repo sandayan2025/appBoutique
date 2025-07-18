@@ -20,16 +20,16 @@ export const uploadProductImage = async (file: File): Promise<string> => {
     if (uploadError) {
       // Handle bucket not found error
       if (uploadError.message.includes('Bucket not found')) {
-        console.error('🪣 SUPABASE STORAGE BUCKET NOT FOUND');
-        console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.error('To enable image uploads, create the storage bucket:');
-        console.error('1. Go to Storage in your Supabase dashboard');
-        console.error('2. Click "New bucket"');
-        console.error('3. Name it exactly: product-images');
-        console.error('4. Set it to "Public bucket"');
-        console.error('5. Create the bucket');
-        console.error('6. Set up storage policies (see README.md)');
-        console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.warn('🪣 SUPABASE STORAGE BUCKET NOT FOUND');
+        console.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.warn('To enable image uploads, create the storage bucket:');
+        console.warn('1. Go to Storage in your Supabase dashboard');
+        console.warn('2. Click "New bucket"');
+        console.warn('3. Name it exactly: product-images');
+        console.warn('4. Set it to "Public bucket"');
+        console.warn('5. Create the bucket');
+        console.warn('6. Set up storage policies (see README.md)');
+        console.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         
         // Return a placeholder image URL
         return `https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop&crop=center`;
