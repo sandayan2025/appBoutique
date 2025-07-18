@@ -43,7 +43,16 @@ export const uploadProductImage = async (file: File): Promise<string> => {
 
     return data.publicUrl;
   } catch (error) {
-    console.error('Error uploading image:', error);
+    // Handle network-level Supabase request failures
+    if (error instanceof Error && 
+        (error.message.includes('Supabase request failed') || 
+         error.message.includes('Bucket not found') ||
+         error.message.includes('Failed to fetch'))) {
+      console.warn('⚠️ Supabase storage request failed - using placeholder image');
+      console.warn('Storage error:', error.message);
+    } else {
+      console.warn('Error uploading image:', error);
+    }
     // Return placeholder image as fallback
     return `https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop&crop=center`;
   }
